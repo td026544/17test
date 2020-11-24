@@ -1,32 +1,29 @@
 package com.dss.a17test.view
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import com.bumptech.glide.Glide
 import com.dss.a17test.R
 import com.dss.a17test.model.UserSearchResult
 
-class UsersRecyclerViewAdapter(private val usersData: ArrayList<UserSearchResult.Item>) :RecyclerView.Adapter<UsersRecyclerViewAdapter.ViewHolder>(){
-//    var datas = ArrayList<UserSearchResult.Item>()
-//
-//    init {
-//        datas.addAll(usersData)
-//    }
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val userNameTxt: TextView
+class UsersRecyclerViewAdapter(val context: Context):
+    PagedListAdapter<UserSearchResult.Item, UsersRecyclerViewAdapter.ViewHolder>(DiffCallback){
 
-        init {
-            // Define click listener for the ViewHolder's View.
-            userNameTxt = view.findViewById(R.id.user_name_txt)
-        }
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val userNameTxt: TextView = view.findViewById(R.id.user_name_txt)
+        val userAvatar: ImageView = view.findViewById(R.id.user_avatar)
+
+
     }
-    fun updateList(newList: List<UserSearchResult.Item>) {
-        usersData.clear()
-        usersData.addAll(newList)
-        notifyDataSetChanged()
-    }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -37,15 +34,47 @@ class UsersRecyclerViewAdapter(private val usersData: ArrayList<UserSearchResult
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: UsersRecyclerViewAdapter.ViewHolder, position: Int) {
-//        holder.userNameTxt.text= usersData[position].id.toString()
-        holder.userNameTxt.text= position.toString()
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+        val data = getItem(position)
+
+        data?.let {
+            holder.userNameTxt.text=data.login
+            val avatarUrl=data.avatar_url
+
+                Glide.with(context)
+                .load(avatarUrl)
+                    .error(R.drawable.ic_baseline_error_24)
+                    .placeholder(R.drawable.ic_baseline_person_24)
+                    .into(holder.userAvatar);
+
+        }
 
 
     }
 
-    override fun getItemCount(): Int {
-        return usersData.size
+
+
+
+
+    companion object DiffCallback : DiffUtil.ItemCallback<UserSearchResult.Item>() {
+
+
+
+        override fun areItemsTheSame(
+            oldItem: UserSearchResult.Item,
+            newItem: UserSearchResult.Item
+        ): Boolean {
+            return oldItem == newItem
+        }
+
+        override fun areContentsTheSame(
+            oldItem: UserSearchResult.Item,
+            newItem: UserSearchResult.Item
+        ): Boolean {
+            return oldItem.id == newItem.id
+        }
     }
+
 
 }

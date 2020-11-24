@@ -6,18 +6,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
+import androidx.core.widget.doAfterTextChanged
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.dss.a17test.HomeViewModel
+import com.dss.a17test.viewmodel.HomeViewModel
 import com.dss.a17test.R
 import kotlinx.android.synthetic.main.home_fragment.*
 
-class HomeFragment : Fragment() {
+class HomeFragment : BaseFragment() {
 
     companion object {
         fun newInstance() = HomeFragment()
     }
-    private lateinit var listAdapter:UsersRecyclerViewAdapter
 
     private lateinit var viewModel: HomeViewModel
 
@@ -31,22 +31,33 @@ class HomeFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+
         initView()
         observe()
-        viewModel.fetchAgentInfo()
         // TODO: Use the ViewModel
+
     }
+    override
     fun observe(){
-        viewModel.userSearchResult.observe(viewLifecycleOwner, {
-            listAdapter.updateList(it.items)
-        })
+
     }
+    override
     fun initView(){
-        listAdapter= UsersRecyclerViewAdapter(arrayListOf())
-        usersRecyclerview.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = listAdapter
+
+//        userNameEdt.doAfterTextChanged{
+//        }
+        searchBtn.setOnClickListener {
+            if(userNameEdt.text.toString().isNotEmpty()){
+                val name = userNameEdt.text.toString()
+                val action =HomeFragmentDirections.actionHomeFragmentToSearchResultFragment(name)
+                findNavController().navigate(action)
+            }else{
+                editTextTextPersonName.error="can't be empty"
+            }
+
         }
+
+
     }
 
 }

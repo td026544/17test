@@ -15,7 +15,7 @@ interface MyApi {
 
 
     @GET("/search/users")
-    fun getTestApi(@QueryMap options: HashMap<String, String>?):Call<UserSearchResult>
+    fun getTestApi(@Query("q") name: String,@Query("page") page: Int):Call<UserSearchResult>
 
 
 
