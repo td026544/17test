@@ -44,8 +44,6 @@ class HomeFragment : BaseFragment() {
     override
     fun initView(){
 
-//        userNameEdt.doAfterTextChanged{
-//        }
         searchBtn.setOnClickListener {
             if(userNameEdt.text.toString().isNotEmpty()){
                 val name = userNameEdt.text.toString()

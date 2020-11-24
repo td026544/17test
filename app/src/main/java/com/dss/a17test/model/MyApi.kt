@@ -7,10 +7,6 @@ import retrofit2.http.*
 interface MyApi {
 
 
-//
-//    @GET("DevTides/DogsApi/master/dogs.json")
-//    fun getDogs(): Call<List<TestModel>>
-
 
 
 
